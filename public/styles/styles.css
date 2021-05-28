@@ -1,0 +1,23 @@
+ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+p {
+    font-size: 0.75rem;
+}
+
+.list-heading {
+    font-size: 1.5rem;
+}
+
+#hello-message {
+    text-align: center;
+    width: 100%;
+    height: 100%;
+}
+
+#hello-message>p {
+    width: 30%;
+    font-size: 1rem;
+}
