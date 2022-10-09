@@ -37,7 +37,10 @@ app.get('/api/v1/similar_tastes/', (req, res) => {
         const fullURL = `${PROXY_URL}${PROXY_URLParameters.toString()}`;
         console.log('fullURL:', fullURL);
         try {
-            const response = await fetch(fullURL);
+            const response = await fetch(fullURL,
+                {headers: {
+                    'Access-Control-Allow-Origin': 'https://www.youtube-nocookie.com'
+                    }});
             if (response.ok) {
                 const data = await response.json();
                 data.contents = JSON.parse(data.contents); // For some reason we have to do this twice 

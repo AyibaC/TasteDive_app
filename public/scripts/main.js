@@ -24,7 +24,7 @@ function renderList(taste){
         const li = document.createElement("li");
         li.classList.add("col", "col-lg-4", "col-md-6", "col-sm-12")
         li.innerHTML = `<div class="card">
-        <iframe src=${yUrl} alt='No video available' class="card-img-top"></iframe>
+        <iframe src=${yUrl} alt='No video available' class="card-img-top" style="height:18rem;"></iframe>
         <div class="card-body">
         <h2>${Name} <small class="text-muted">(${Type})</small></h2>
         <p>${wTeaser}</p>

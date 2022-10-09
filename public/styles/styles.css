@@ -8,7 +8,15 @@ p {
 }
 
 .list-heading {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
+}
+
+input {
+    margin-left: 1%;
+}
+
+#search-form {
+    padding-bottom: 1%;
 }
 
 #hello-message {
@@ -22,3 +30,4 @@ p {
     width: 30%;
     font-size: 1rem;
 }
+
