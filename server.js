@@ -55,6 +55,10 @@ app.get('/api/v1/similar_tastes/', (req, res) => {
     })();
 });
 
-app.listen( PORT, () => {
-    console.log(`Listening on port ${PORT}`)
+let port = process.env.PORT;
+if (port == null || port == "") {
+  port = 8000;
+};
+app.listen( port, () => {
+    console.log(`Listening on port ${port}`)
 });
