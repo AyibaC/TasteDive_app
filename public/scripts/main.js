@@ -14,10 +14,10 @@ function renderList(taste){
     const resultsSection = document.getElementById("resultsListMountNode");
     resultsSection.innerHTML = '';
     const list = document.createElement("ul");
-    console.log('results: ', taste.Similar.Results);
-    console.log('length', taste.Similar.Results.length);
-    if(taste.Similar.Results.length!==0){
-        for (const {Name, Type, wTeaser, wUrl, yUrl, yID} of taste.Similar.Results) {
+    console.log('results: ', taste.similar.results);
+    console.log('length', taste.similar.results.length);
+    if(taste.similar.results.length!==0){
+        for (const {description, name, wUrl, yID, yUrl} of taste.similar.results) {
             //render list
         resultsSection.appendChild(list);
         list.classList.add("row", "g-2");
@@ -26,8 +26,8 @@ function renderList(taste){
         li.innerHTML = `<div class="card">
         <iframe src=${yUrl} alt='No video available' class="card-img-top" style="height:18rem;"></iframe>
         <div class="card-body">
-        <h2>${Name} <small class="text-muted">(${Type})</small></h2>
-        <p>${wTeaser}</p>
+        <h2>${name}</h2>
+        <p>${description}</p>
         <a href=${wUrl} target="_blank" class="btn btn-primary">Learn more</a>
         </div>
         </div>`
@@ -50,9 +50,10 @@ function renderList(taste){
 
 async function getTastes(data, handler=renderList) {
     console.log('getTastes input: ', data);
-    const joinedData = data.join('+');
-    const queryString = `?q=${joinedData}`
-    console.log('query string: ', queryString)
+    const inputArray = data.input.split(' ');
+    const joinedData = inputArray.join('+');
+    const queryString = `?q=${joinedData}&type=${data.type}`;
+    console.log('query string: ', queryString);
     try {
         const response = await fetch(`http://localhost:3000/api/v1/similar_tastes${queryString}`)
         if (response.ok) {
@@ -72,9 +73,9 @@ searchForm.addEventListener("submit", (e) => {
     const formData = new FormData(searchForm);
     localStorage.setItem('userTaste', JSON.stringify(Object.fromEntries(formData)));
     const data = Object.fromEntries(formData);
-    const dataArray = data.input.split(' ')
-    console.log('data array: ', dataArray);
-    getTastes(dataArray);
+    // const dataArray = data.input.split(' ');
+    // console.log('data array: ', dataArray);
+    getTastes(data);
     searchForm.reset();
 });
 

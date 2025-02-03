@@ -20,6 +20,7 @@ app.use(cors());
 
 app.get('/api/v1/similar_tastes/', (req, res) => {
     const taste = req.query.q;
+    const type = req.query.type;
     console.log('req: ', taste);
 
     (async()=>{
@@ -29,6 +30,7 @@ app.get('/api/v1/similar_tastes/', (req, res) => {
         API_URLParameters.set("limit", 6);
         API_URLParameters.set("k", API_KEY);
         API_URLParameters.set("q", taste );
+        API_URLParameters.set("type", type);
 
         const FULL_API_URL = `${API_URL}${API_URLParameters.toString()}`;
         console.log('FULL_API_URL', FULL_API_URL);
@@ -39,7 +41,7 @@ app.get('/api/v1/similar_tastes/', (req, res) => {
         try {
             const response = await fetch(fullURL,
                 {headers: {
-                    'Access-Control-Allow-Origin': 'https://www.youtube-nocookie.com'
+                    'Access-Control-Allow-Origin': '*'
                     }});
             if (response.ok) {
                 const data = await response.json();
