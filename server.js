@@ -39,10 +39,11 @@ app.get('/api/v1/similar_tastes/', (req, res) => {
         const fullURL = `${PROXY_URL}${PROXY_URLParameters.toString()}`;
         console.log('fullURL:', fullURL);
         try {
-            const response = await fetch(fullURL,
-                {headers: {
-                    'Access-Control-Allow-Origin': '*'
-                    }});
+            const response = await fetch(fullURL);
+                // {headers: {
+                //     "Access-Control-Allow-Origin": "*",
+                //     "Content-Security-Policy": "frame-src https://youtube.com/"
+                //     }});
             if (response.ok) {
                 const data = await response.json();
                 data.contents = JSON.parse(data.contents); // For some reason we have to do this twice 
@@ -52,14 +53,14 @@ app.get('/api/v1/similar_tastes/', (req, res) => {
                 res.status(404).send(data.contents);
                 }
             } catch (err) {
-                console.log(err.message);
+                console.log('error: ', err.message);
             }
     })();
 });
 
-let port = process.env.PORT;
+let port = PORT;
 if (port == null || port == "") {
-  port = 8000;
+    port = 8000;
 };
 app.listen( port, () => {
     console.log(`Listening on port ${port}`)
