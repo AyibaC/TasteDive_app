@@ -27,7 +27,7 @@ app.get('/api/v1/similar_tastes/', (req, res) => {
         const PROXY_URLParameters = new URLSearchParams();
         const API_URLParameters = new URLSearchParams();
         API_URLParameters.set("info", 1);
-        API_URLParameters.set("limit", 6);
+        // API_URLParameters.set("limit", 6);
         API_URLParameters.set("k", API_KEY);
         API_URLParameters.set("q", taste );
         API_URLParameters.set("type", type);
@@ -36,24 +36,24 @@ app.get('/api/v1/similar_tastes/', (req, res) => {
         console.log('FULL_API_URL', FULL_API_URL);
         
         PROXY_URLParameters.set('url', FULL_API_URL);
-        const fullURL = `${PROXY_URL}${PROXY_URLParameters.toString()}`;
+        const fullURL = `${PROXY_URL}${PROXY_URLParameters.toString()}`; ///REMOVE: XYZ TO TRY AND CREATE ERROR 
         console.log('fullURL:', fullURL);
         try {
             const response = await fetch(fullURL);
-                // {headers: {
-                //     "Access-Control-Allow-Origin": "*",
-                //     "Content-Security-Policy": "frame-src https://youtube.com/"
-                //     }});
-            if (response.ok) {
-                const data = await response.json();
-                data.contents = JSON.parse(data.contents); // For some reason we have to do this twice 
-                console.log('data', data.contents);
+            const data = await response.json();
+            data.contents = JSON.parse(data.contents); // For some reason we have to do this twice 
+            if (!data.contents.error) {
+                console.log('data contents', data.contents);
                 res.status(200).json(data.contents);
+                console.log('res: ', res.statusCode)
                 } else {
                 res.status(404).send(data.contents);
+                console.log('res: ', res.statusCode)
                 }
             } catch (err) {
                 console.log('error: ', err.message);
+                res.status(500).send(err.message);
+                console.log('res: ', res.statusCode)
             }
     })();
 });
