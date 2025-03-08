@@ -1,40 +1,76 @@
 console.log('hooked up');
 const searchForm = document.forms["search-form"];
+const spinner = document.getElementById('spinner');
+const helloMessage = document.getElementById('hello-message');
+const resultMessage = document.getElementById('result-message');
+const resultsSection = document.getElementById("resultsListMountNode");
 
 function renderList(taste){
-    const helloMessage = document.getElementById('hello-message');
     if(helloMessage){helloMessage.remove()};
-    const spinner = document.getElementById('spinner');
-    if(document.readyState!=="complete"){
-        spinner.removeAttribute("hidden");
-    }else{
-        const resultMessage = document.getElementById('result-message');
-        resultMessage.innerHTML = ''
-        const msg = document.createElement("p");
-        msg.classList.add('list-heading')
-        const userTaste = JSON.parse(localStorage.getItem('userTaste'));
-        msg.innerHTML = `If you like ${userTaste.input}, you'll also like...`
-        resultMessage.append(msg);
-        const resultsSection = document.getElementById("resultsListMountNode");
-        resultsSection.innerHTML = '';
-        const list = document.createElement("ul");
-        console.log('results: ', taste.similar.results);
-        console.log('length', taste.similar.results.length);
-        if(taste.similar.results.length!==0){
-            if(['music','podcast'].includes(userTaste.type)){
-                for (const {description, name, wUrl, yID, yUrl} of taste.similar.results) {
-                    resultsSection.appendChild(list);
-                    list.classList.add("row", "g-2");
-                    const li = document.createElement("li");
-                    li.classList.add("col", "col-lg-4", "col-md-6", "col-sm-12");
-                console.log('type: ',userTaste.type);
-                if(!description){
-                    const videoID = yUrl.split("v=")[1]?.split("&")[0];
-                    const embedURL = `https://www.youtube.com/embed/${videoID}`; 
+    console.log('ready state: ', document.readyState);
+    if(document.readyState=="complete"){
+        spinner.hidden = true;
+    }
+    resultMessage.innerHTML = '';
+    const msg = document.createElement("p");
+    msg.classList.add('list-heading')
+    const userTaste = JSON.parse(localStorage.getItem('userTaste'));
+    msg.innerHTML = `If you like ${userTaste.input}, you'll also like...`
+    resultMessage.append(msg);
+    resultsSection.innerHTML = '';
+    const list = document.createElement("ul");
+    console.log('results: ', taste.similar.results);
+    console.log('length', taste.similar.results.length);
+    if(taste.similar.results.length!==0){
+        if(['music','podcast'].includes(userTaste.type)){
+            for (const {description, name, wUrl, yID, yUrl} of taste.similar.results) {
+                resultsSection.appendChild(list);
+                list.classList.add("row", "g-2");
+                const li = document.createElement("li");
+                li.classList.add("col", "col-lg-4", "col-md-6", "col-sm-12");
+            console.log('type: ',userTaste.type);
+            if(!description){
+                let videoID = '';
+                if(yUrl){videoID = yUrl.split("v=")[1]?.split("&")[0]};
+                const embedURL = `https://www.youtube.com/embed/${videoID}`; 
+                li.innerHTML = `<div class="card">
+                <iframe src="${embedURL}"  alt='No video available' class="card-img-top" style="height:18rem;" allowfullscreen></iframe>
+                <div class="card-body">
+                <h2>${name}</h2>
+                <a href=${wUrl} target="_blank" class="btn btn-primary">Learn more</a>
+                </div>
+                </div>`
+            } else {
+                let videoID = '';
+                if(yUrl){videoID = yUrl.split("v=")[1]?.split("&")[0]};
+                const embedURL = `https://www.youtube.com/embed/${videoID}`; 
+                li.innerHTML = `<div class="card">
+                <iframe src="${embedURL}"  alt='No video available' class="card-img-top" style="height:18rem;" allowfullscreen></iframe>
+                <div class="card-body">
+                <h2>${name}</h2>
+                <p>${description}</p>
+                <a href=${wUrl} target="_blank" class="btn btn-primary">Learn more</a>
+                </div>
+                </div>`
+            }
+            list.append(li); }
+        } else {
+            const filteredResults = taste.similar.results.filter(
+                (item) => item.name && item.name.trim() !== ""
+                            && item.description && item.description.trim() !== "" 
+                            && item.wUrl && item.wUrl.trim() !== ""
+            );
+            console.log('filteredResults; ', filteredResults)
+            for (const {description, name, wUrl, yID, yUrl} of filteredResults) {
+                resultsSection.appendChild(list);
+                list.classList.add("row", "g-2");
+                const li = document.createElement("li");
+                li.classList.add("col", "col-lg-4", "col-md-6", "col-sm-12");
+                if(!yUrl){
                     li.innerHTML = `<div class="card">
-                    <iframe src="${embedURL}"  alt='No video available' class="card-img-top" style="height:18rem;" allowfullscreen></iframe>
                     <div class="card-body">
                     <h2>${name}</h2>
+                    <p>${description}</p>
                     <a href=${wUrl} target="_blank" class="btn btn-primary">Learn more</a>
                     </div>
                     </div>`
@@ -51,82 +87,19 @@ function renderList(taste){
                     </div>`
                 }
                 list.append(li); }
-            } else {
-                const filteredResults = taste.similar.results.filter(
-                    (item) => item.name && item.name.trim() !== ""
-                                && item.description && item.description.trim() !== "" 
-                                && item.wUrl && item.wUrl.trim() !== ""
-                );
-                console.log('filteredResults; ', filteredResults)
-                for (const {description, name, wUrl, yID, yUrl} of filteredResults) {
-                    resultsSection.appendChild(list);
-                    list.classList.add("row", "g-2");
-                    const li = document.createElement("li");
-                    li.classList.add("col", "col-lg-4", "col-md-6", "col-sm-12");
-                    if(!yUrl){
-                        li.innerHTML = `<div class="card">
-                        <div class="card-body">
-                        <h2>${name}</h2>
-                        <p>${description}</p>
-                        <a href=${wUrl} target="_blank" class="btn btn-primary">Learn more</a>
-                        </div>
-                        </div>`
-                    } else {
-                        const videoID = yUrl.split("v=")[1]?.split("&")[0];
-                        const embedURL = `https://www.youtube.com/embed/${videoID}`; 
-                        li.innerHTML = `<div class="card">
-                        <iframe src="${embedURL}"  alt='No video available' class="card-img-top" style="height:18rem;" allowfullscreen></iframe>
-                        <div class="card-body">
-                        <h2>${name}</h2>
-                        <p>${description}</p>
-                        <a href=${wUrl} target="_blank" class="btn btn-primary">Learn more</a>
-                        </div>
-                        </div>`
-                    }
-                    list.append(li); }
-            }
-            // else if(userTaste.input.type=='game'){
-                
-            // }
-
-
-
-
-
-                // if(!yUrl){
-                //     li.innerHTML = `<div class="card">
-                //     <div class="card-body">
-                //     <h2>${name}</h2>
-                //     <p>${description}</p>
-                //     <a href=${wUrl} target="_blank" class="btn btn-primary">Learn more</a>
-                //     </div>
-                //     </div>`
-                // } else {
-                //     const videoID = yUrl.split("v=")[1]?.split("&")[0];
-                //     const embedURL = `https://www.youtube.com/embed/${videoID}`; 
-                //     li.innerHTML = `<div class="card">
-                //     <iframe src="${embedURL}"  alt='No video available' class="card-img-top" style="height:18rem;" allowfullscreen></iframe>
-                //     <div class="card-body">
-                //     <h2>${name}</h2>
-                //     <p>${description}</p>
-                //     <a href=${wUrl} target="_blank" class="btn btn-primary">Learn more</a>
-                //     </div>
-                //     </div>`
-                // }
-                // list.append(li);
-            
-        } else if(taste.Similar.Results.length==0){
-        console.log('no results');
-        const sadIcon = document.createElement("i");
-        sadIcon.classList.add("bi","bi-emoji-frown");
-        sadIcon.style.fontSize = "1.5rem";
-        resultsSection.appendChild(sadIcon);
-        const noResults = document.createElement("p");
-        noResults.innerHTML = `Sorry we can't find any tastes to match yours. Try something else.`;
-        resultsSection.appendChild(noResults);
-        noResults.style.fontSize = "1.5rem"
-        resultsSection.style.textAlign = "center"
         }
+        
+    } else if(taste.Similar.Results.length==0){
+    console.log('no results');
+    const sadIcon = document.createElement("i");
+    sadIcon.classList.add("bi","bi-emoji-frown");
+    sadIcon.style.fontSize = "1.5rem";
+    resultsSection.appendChild(sadIcon);
+    const noResults = document.createElement("p");
+    noResults.innerHTML = `Sorry we can't find any tastes to match yours. Try something else.`;
+    resultsSection.appendChild(noResults);
+    noResults.style.fontSize = "1.5rem"
+    resultsSection.style.textAlign = "center"
     }
     };
 
@@ -172,6 +145,11 @@ searchForm.addEventListener("submit", (e) => {
     const formData = new FormData(searchForm);
     localStorage.setItem('userTaste', JSON.stringify(Object.fromEntries(formData)));
     const data = Object.fromEntries(formData);
+    if(helloMessage){helloMessage.remove()};
+    resultMessage.innerHTML = '';
+    resultsSection.innerHTML = '';
+    console.log('ready state: ', document.readyState);
+    spinner.hidden = false;
     getTastes(data);
     searchForm.reset();
 });
