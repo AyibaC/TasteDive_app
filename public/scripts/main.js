@@ -4,10 +4,18 @@ const spinner = document.getElementById('spinner');
 const helloMessage = document.getElementById('hello-message');
 const resultMessage = document.getElementById('result-message');
 const resultsSection = document.getElementById("resultsListMountNode");
+const wrapper = document.getElementById('container');
 
 function renderList(taste){
     if(helloMessage){helloMessage.remove()};
     console.log('ready state: ', document.readyState);
+
+    if(wrapper){
+        wrapper.classList.remove('d-grid');
+        wrapper.classList.remove('align-content-center');
+        wrapper.classList.remove('vh-100');
+    }
+
     if(document.readyState=="complete"){
         spinner.hidden = true;
     }

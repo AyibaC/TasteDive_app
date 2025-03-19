@@ -27,7 +27,6 @@ input {
 }
 
 #hello-message>p {
-    width: 30%;
+    width: 60%;
     font-size: 1rem;
 }
-
